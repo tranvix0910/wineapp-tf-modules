@@ -1,0 +1,46 @@
+# Terraform
+**/.terraform/**
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.lock.hcl
+
+# Terraform plans
+tfplan
+*.plan
+
+# Local variable files
+terraform.tfvars
+
+# Keys and secrets (keep only public keys)
+Key/*
+!Key/*.pub
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE/editor
+.vscode/
+.idea/
+*.iml
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.*
+
+Key/*
+
