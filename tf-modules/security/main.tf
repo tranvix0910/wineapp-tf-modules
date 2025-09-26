@@ -36,6 +36,12 @@ module "public_sg" {
       protocol    = "tcp"
       cidr_blocks = "0.0.0.0/0"
     },
+    {
+      from_port   = 4000
+      to_port     = 4000
+      protocol    = "tcp"
+      cidr_blocks = "0.0.0.0/0"
+    },
   ]
   egress_rules = ["all-all"]
 }
@@ -57,6 +63,12 @@ module "private_sg" {
     {
       from_port   = 8080
       to_port     = 8080
+      protocol    = "tcp"
+      source_security_group_id = module.public_sg.security_group_id
+    },
+    {
+      from_port   = 4000
+      to_port     = 4000
       protocol    = "tcp"
       source_security_group_id = module.public_sg.security_group_id
     }

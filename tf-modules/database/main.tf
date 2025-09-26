@@ -4,7 +4,7 @@ resource "random_password" "mongodb_password" {
 }
 
 resource "aws_secretsmanager_secret" "mongodb_secret" {
-  name = "mongodb_secret_25092025_6"
+  name = "mongodb_secret_26092025_5"
 }
 
 resource "aws_secretsmanager_secret_version" "mongodb_secret_version" {
@@ -49,10 +49,11 @@ resource "aws_docdb_cluster_instance" "cluster_instances" {
 }
 
 resource "aws_secretsmanager_secret" "mongodb_connection_string" {
-  name = "mongodb_connection_string_25092025_6"
+  name = "mongodb_connection_string_26092025_5"
 }
 
 resource "aws_secretsmanager_secret_version" "mongodb_connection_string_version" {
   secret_id     = aws_secretsmanager_secret.mongodb_connection_string.id
-  secret_string =  "mongodb://${var.db_username}:${aws_secretsmanager_secret_version.mongodb_secret_version.secret_string}@${aws_docdb_cluster.mongodb_cluster.endpoint}:27017/dev"
+  secret_string =  "mongodb://${var.db_username}:${aws_secretsmanager_secret_version.mongodb_secret_version.secret_string}@${aws_docdb_cluster.mongodb_cluster.endpoint}:27017/wine-website"
 }
+

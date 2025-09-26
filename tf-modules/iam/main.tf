@@ -94,7 +94,7 @@ resource "aws_iam_policy" "ecs_task_role_policy" {
           "ecr:BatchGetImage",
           "logs:CreateLogStream",
           "logs:PutLogEvents",
-          "secretmanager:GetSecretValue"
+          "secretsmanager:GetSecretValue"
         ],
         "Resource": "*"
       }

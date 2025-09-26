@@ -108,10 +108,6 @@ resource "aws_ecs_task_definition" "backend_task_definition" {
           "value": "alksjdoijoqwijeoijoaidjozisjdiuhqiwejoqwjozsihodznsioaisjdo"
         },
         {
-          "name": "MONGO_CONNECTION",
-          "value": "${var.mongodb_connection_string_secret_arn}"
-        },
-        {
           "name": "EMAIL_NAME",
           "value": "phattran052004@gmail.com"
         },
@@ -122,6 +118,12 @@ resource "aws_ecs_task_definition" "backend_task_definition" {
         {
           "name": "NODE_ENV",
           "value": "production"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "MONGO_CONNECTION",
+          "valueFrom": "${var.mongodb_connection_string_secret_arn}"
         }
       ],
       "portMappings": [
@@ -146,12 +148,15 @@ resource "aws_ecs_task_definition" "backend_task_definition" {
 }
 
 resource "aws_ecs_service" "backend_service" {
+  
   name = "${var.backend_container_name}"
+  
   network_configuration {
     subnets          = var.ecs_subnet_ids
     security_groups  = var.ecs_security_group_ids
     assign_public_ip = true
   }
+
   cluster         = aws_ecs_cluster.ecs_cluster.id
   task_definition = aws_ecs_task_definition.backend_task_definition.arn
   desired_count   = 1
@@ -166,5 +171,6 @@ resource "aws_ecs_service" "backend_service" {
     container_name   = "${var.backend_container_name}"
     container_port   = 4000
   }
+
 }
 
