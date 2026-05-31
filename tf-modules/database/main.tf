@@ -4,7 +4,7 @@ resource "random_password" "mongodb_password" {
 }
 
 resource "aws_secretsmanager_secret" "mongodb_secret" {
-  name = "mongodb_secret_26092025_5"
+  name = "mongodb_secret_26092025_7"
 }
 
 resource "aws_secretsmanager_secret_version" "mongodb_secret_version" {
@@ -49,7 +49,7 @@ resource "aws_docdb_cluster_instance" "cluster_instances" {
 }
 
 resource "aws_secretsmanager_secret" "mongodb_connection_string" {
-  name = "mongodb_connection_string_26092025_5"
+  name = "mongodb_connection_string_26092025_7"
 }
 
 resource "aws_secretsmanager_secret_version" "mongodb_connection_string_version" {

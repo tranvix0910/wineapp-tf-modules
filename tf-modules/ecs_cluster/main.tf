@@ -30,7 +30,7 @@ resource "aws_ecs_task_definition" "frontend_task_definition" {
       "environment": [
         {
           "name": "REACT_APP_API_URL",
-          "value": "${var.alb_dns_backend}/api" 
+          "value": "${var.alb_dns_backend}/api/v1" 
         }
       ],
       "cpu": 512,

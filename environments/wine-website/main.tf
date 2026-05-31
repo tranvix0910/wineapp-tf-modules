@@ -102,27 +102,27 @@ module "database"{
   ]
 }
 
-module "aws_code_deploy" {
-  source = "../../tf-modules/code_deploy"
+# module "aws_code_deploy" {
+#   source = "../../tf-modules/code_deploy"
 
-  codedeploy_app_name = "ecs-bluegreen-app"
+#   codedeploy_app_name = "ecs-bluegreen-app"
 
-  codedeploy_deployment_group_name_frontend = "ecs-bluegreen-deployment-group-frontend"
-  codedeploy_deployment_group_name_backend = "ecs-bluegreen-deployment-group-backend"
+#   codedeploy_deployment_group_name_frontend = "ecs-bluegreen-deployment-group-frontend"
+#   codedeploy_deployment_group_name_backend = "ecs-bluegreen-deployment-group-backend"
 
-  codedeploy_ecs_task_role_arn = module.aws_iam.codedeploy_service_role_arn
+#   codedeploy_ecs_task_role_arn = module.aws_iam.codedeploy_service_role_arn
 
-  codedeploy_ecs_cluster_name = module.aws_ecs_cluster.ecs_cluster_name
+#   codedeploy_ecs_cluster_name = module.aws_ecs_cluster.ecs_cluster_name
 
-  codedeploy_ecs_service_frontend_name = module.aws_ecs_cluster.frontend_service_name
-  codedeploy_ecs_service_backend_name = module.aws_ecs_cluster.backend_service_name
+#   codedeploy_ecs_service_frontend_name = module.aws_ecs_cluster.frontend_service_name
+#   codedeploy_ecs_service_backend_name = module.aws_ecs_cluster.backend_service_name
 
-  codedeploy_frontend_listener_arn = module.aws_load_balance.frontend_listener_arn
+#   codedeploy_frontend_listener_arn = module.aws_load_balance.frontend_listener_arn
 
-  codedeploy_frontend_target_group_blue_name = module.aws_load_balance.frontend_target_group_blue_name
-  codedeploy_frontend_target_group_green_name = module.aws_load_balance.frontend_target_group_green_name
+#   codedeploy_frontend_target_group_blue_name = module.aws_load_balance.frontend_target_group_blue_name
+#   codedeploy_frontend_target_group_green_name = module.aws_load_balance.frontend_target_group_green_name
   
-  codedeploy_backend_target_group_blue_name = module.aws_load_balance.backend_target_group_blue_name
-  codedeploy_backend_target_group_green_name = module.aws_load_balance.backend_target_group_green_name
-}
+#   codedeploy_backend_target_group_blue_name = module.aws_load_balance.backend_target_group_blue_name
+#   codedeploy_backend_target_group_green_name = module.aws_load_balance.backend_target_group_green_name
+# }
 
