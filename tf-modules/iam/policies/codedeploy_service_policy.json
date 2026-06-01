@@ -1,0 +1,31 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ecs:CreateTaskSet",
+        "ecs:DeleteTaskSet",
+        "ecs:DescribeServices",
+        "ecs:UpdateServicePrimaryTaskSet",
+        "ecs:DescribeTaskDefinition",
+        "ecs:DescribeTaskSets",
+        "ecs:ListTasks",
+        "ecs:DescribeTasks",
+        "ecs:RunTask",
+        "ecs:StopTask",
+        "ecs:DescribeClusters",
+        "elasticloadbalancing:DescribeTargetGroups",
+        "elasticloadbalancing:DescribeListeners",
+        "elasticloadbalancing:ModifyListener",
+        "elasticloadbalancing:DescribeRules",
+        "elasticloadbalancing:ModifyRule",
+        "elasticloadbalancing:DescribeTargetHealth",
+        "elasticloadbalancing:RegisterTargets",
+        "elasticloadbalancing:DeregisterTargets",
+        "iam:PassRole"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
