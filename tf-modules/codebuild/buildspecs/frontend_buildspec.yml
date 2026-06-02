@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+  build:
+    commands:
+      - echo Build started on `date`
+      - npm install
+      - npm run build
+  post_build:
+    commands:
+      - echo Deploying to S3 bucket $S3_BUCKET_NAME...
+      - aws s3 sync build/ s3://$S3_BUCKET_NAME --delete
+      - echo Invalidating CloudFront cache for distribution $CLOUDFRONT_DIST_ID...
+      - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DIST_ID --paths "/*"
+      - echo Frontend deployment completed on `date`
