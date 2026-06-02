@@ -22,16 +22,10 @@
         "elasticloadbalancing:ModifyRule",
         "elasticloadbalancing:DescribeTargetHealth",
         "elasticloadbalancing:RegisterTargets",
-        "elasticloadbalancing:DeregisterTargets"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
+        "elasticloadbalancing:DeregisterTargets",
         "iam:PassRole"
       ],
-      "Resource": "arn:aws:iam::*:role/*wineapp*"
+      "Resource": "*"
     }
   ]
 }

@@ -21,3 +21,14 @@ output "alb_dns_name" {
 output "cloudfront_domain_name" {
   value = module.aws_cloudfront.cloudfront_domain_name
 }
+
+output "codecommit_clone_url_http" {
+  description = "The HTTP clone URL for the CodeCommit repository"
+  value       = module.aws_codecommit.clone_url_http
+}
+
+output "codecommit_clone_url_ssh" {
+  description = "The SSH clone URL for the CodeCommit repository"
+  value       = module.aws_codecommit.clone_url_ssh
+}
+

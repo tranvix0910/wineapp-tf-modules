@@ -134,3 +134,36 @@ module "aws_database" {
   db_subnet_group       = module.aws_vpc.private_subnet_ids
   db_security_group_ids = [module.aws_security_group.database_sg_id]
 }
+
+module "aws_codecommit" {
+  source = "../../tf-modules/codecommit"
+
+  project_name = var.project_name
+}
+
+module "aws_codebuild" {
+  source = "../../tf-modules/codebuild"
+
+  project_name = var.project_name
+  environment  = var.environment
+
+  backend_ecr_repo_url        = split(":", var.backend_ecr_image_url)[0]
+  frontend_bucket_id          = module.aws_s3_frontend.bucket_id
+  frontend_bucket_arn         = module.aws_s3_frontend.bucket_arn
+  cloudfront_distribution_id  = module.aws_cloudfront.cloudfront_distribution_id
+  artifacts_bucket_arn        = module.aws_codepipeline.artifacts_bucket_arn
+  artifacts_bucket_id         = module.aws_codepipeline.artifacts_bucket_id
+}
+
+module "aws_codepipeline" {
+  source = "../../tf-modules/codepipeline"
+
+  project_name                     = var.project_name
+  environment                      = var.environment
+  codecommit_repo_name             = module.aws_codecommit.repository_name
+  codecommit_repo_arn              = module.aws_codecommit.repository_arn
+  backend_codebuild_project_name   = module.aws_codebuild.backend_project_name
+  frontend_codebuild_project_name  = module.aws_codebuild.frontend_project_name
+  codedeploy_app_name              = "${var.project_name}-ecs-bluegreen-app"
+  codedeploy_deployment_group_name = "${var.project_name}-ecs-bluegreen-deployment-group-backend"
+}
