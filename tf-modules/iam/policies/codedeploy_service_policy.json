@@ -31,7 +31,7 @@
       "Action": [
         "iam:PassRole"
       ],
-      "Resource": "arn:aws:iam::*:role/*wine-app*"
+      "Resource": "arn:aws:iam::*:role/*wineapp*"
     }
   ]
 }

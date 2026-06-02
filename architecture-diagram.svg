@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 950" font-family="Arial, sans-serif">
+
+  <!-- Background -->
+  <rect width="1200" height="950" fill="#f8f9fa"/>
+
+  <!-- Title -->
+  <text x="600" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#1a1a2e">WineApp AWS Architecture — ap-southeast-1</text>
+  <text x="600" y="55" text-anchor="middle" font-size="12" fill="#666">Domain: wineapp.click | VPC: 10.0.0.0/16</text>
+
+  <!-- ─── INTERNET / USERS ─── -->
+  <rect x="510" y="75" width="180" height="44" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+  <text x="600" y="95" text-anchor="middle" font-size="12" font-weight="bold" fill="#1565c0">🌐 Users / Internet</text>
+  <text x="600" y="111" text-anchor="middle" font-size="10" fill="#1565c0">HTTPS (port 443)</text>
+
+  <!-- Arrow: Internet → Route53 -->
+  <line x1="600" y1="119" x2="600" y2="143" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ─── Route 53 ─── -->
+  <rect x="490" y="143" width="220" height="44" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+  <text x="600" y="163" text-anchor="middle" font-size="12" font-weight="bold" fill="#e65100">🔀 Amazon Route 53</text>
+  <text x="600" y="179" text-anchor="middle" font-size="10" fill="#e65100">wineapp.click | *.wineapp.click</text>
+
+  <!-- Arrow: Route53 → CloudFront -->
+  <line x1="600" y1="187" x2="600" y2="211" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ─── ACM ─── (right of Route53) -->
+  <rect x="790" y="143" width="160" height="44" rx="8" fill="#fce4ec" stroke="#880e4f" stroke-width="1.5"/>
+  <text x="870" y="163" text-anchor="middle" font-size="12" font-weight="bold" fill="#880e4f">🔒 ACM Certificate</text>
+  <text x="870" y="179" text-anchor="middle" font-size="10" fill="#880e4f">us-east-1 (for CloudFront)</text>
+  <!-- ACM → CloudFront dashed -->
+  <line x1="790" y1="165" x2="720" y2="240" stroke="#880e4f" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arrow-pink)"/>
+
+  <!-- ─── CloudFront ─── -->
+  <rect x="420" y="211" width="360" height="54" rx="8" fill="#e8f5e9" stroke="#1b5e20" stroke-width="1.5"/>
+  <text x="600" y="233" text-anchor="middle" font-size="12" font-weight="bold" fill="#1b5e20">⚡ Amazon CloudFront CDN</text>
+  <text x="600" y="248" text-anchor="middle" font-size="10" fill="#1b5e20">wine-app.wineapp.click | HTTPS → redirect</text>
+  <text x="600" y="260" text-anchor="middle" font-size="10" fill="#1b5e20">/api/* → ALB (HTTP) | /* → S3</text>
+
+  <!-- Arrow: CloudFront → S3 (left) -->
+  <line x1="420" y1="238" x2="330" y2="338" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <!-- Arrow: CloudFront → ALB (down) -->
+  <line x1="620" y1="265" x2="620" y2="380" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ─── S3 Frontend ─── -->
+  <rect x="130" y="330" width="200" height="54" rx="8" fill="#e8f5e9" stroke="#1b5e20" stroke-width="1.5"/>
+  <text x="230" y="352" text-anchor="middle" font-size="12" font-weight="bold" fill="#1b5e20">📦 S3 Bucket (Frontend)</text>
+  <text x="230" y="368" text-anchor="middle" font-size="10" fill="#1b5e20">wine-app-frontend-dev</text>
+  <text x="230" y="380" text-anchor="middle" font-size="10" fill="#1b5e20">Static React SPA | OAC</text>
+
+  <!-- ─── VPC boundary ─── -->
+  <rect x="50" y="390" width="1100" height="510" rx="12" fill="none" stroke="#546e7a" stroke-width="2" stroke-dasharray="10,5"/>
+  <text x="75" y="412" font-size="11" fill="#546e7a" font-weight="bold">VPC: 10.0.0.0/16</text>
+
+  <!-- Public Subnet zone -->
+  <rect x="70" y="420" width="1060" height="130" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.2" stroke-dasharray="6,3"/>
+  <text x="90" y="438" font-size="11" fill="#1565c0" font-weight="bold">Public Subnets (AZ-1a: 10.0.1.0/24 | AZ-1b: 10.0.2.0/24)</text>
+
+  <!-- ALB -->
+  <rect x="420" y="445" width="360" height="54" rx="8" fill="#fff9c4" stroke="#f57f17" stroke-width="1.5"/>
+  <text x="600" y="467" text-anchor="middle" font-size="12" font-weight="bold" fill="#f57f17">⚖️ Application Load Balancer (ALB)</text>
+  <text x="600" y="482" text-anchor="middle" font-size="10" fill="#f57f17">HTTP :80 → Backend TG Blue | Security Group: public-sg</text>
+  <text x="600" y="494" text-anchor="middle" font-size="10" fill="#f57f17">TG Blue (port 4000) | TG Green (port 4000) — Blue/Green</text>
+
+  <!-- Bastion Host -->
+  <rect x="840" y="445" width="260" height="54" rx="8" fill="#f3e5f5" stroke="#4a148c" stroke-width="1.5"/>
+  <text x="970" y="467" text-anchor="middle" font-size="12" font-weight="bold" fill="#4a148c">🖥️ Bastion Host (EC2)</text>
+  <text x="970" y="482" text-anchor="middle" font-size="10" fill="#4a148c">t2.micro | SSM + SSH | MongoDB client</text>
+  <text x="970" y="494" text-anchor="middle" font-size="10" fill="#4a148c">Public subnet-1 | bastion-sg</text>
+
+  <!-- NAT Gateway -->
+  <rect x="90" y="445" width="200" height="54" rx="8" fill="#e0f7fa" stroke="#006064" stroke-width="1.5"/>
+  <text x="190" y="467" text-anchor="middle" font-size="12" font-weight="bold" fill="#006064">🌐 NAT Gateway</text>
+  <text x="190" y="482" text-anchor="middle" font-size="10" fill="#006064">Single NAT (public subnet)</text>
+  <text x="190" y="494" text-anchor="middle" font-size="10" fill="#006064">Outbound internet for private</text>
+
+  <!-- Private Subnet zone -->
+  <rect x="70" y="565" width="1060" height="190" rx="8" fill="#fce4ec" stroke="#880e4f" stroke-width="1.2" stroke-dasharray="6,3"/>
+  <text x="90" y="582" font-size="11" fill="#880e4f" font-weight="bold">Private Subnets (AZ-1a: 10.0.101.0/24 | AZ-1b: 10.0.102.0/24)</text>
+
+  <!-- ECS Cluster box -->
+  <rect x="90" y="590" width="700" height="150" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+  <text x="440" y="608" text-anchor="middle" font-size="11" fill="#e65100" font-weight="bold">ECS Cluster: wine-app-ecs-cluster (Fargate)</text>
+
+  <!-- Backend Task -->
+  <rect x="200" y="618" width="480" height="110" rx="6" fill="#fff8e1" stroke="#f57f17" stroke-width="1.2"/>
+  <text x="440" y="638" text-anchor="middle" font-size="11" font-weight="bold" fill="#f57f17">📦 Backend ECS Service (Fargate)</text>
+  <text x="440" y="653" text-anchor="middle" font-size="10" fill="#555">Container: wine-app-backend | Port 4000 | Node.js/Express</text>
+  <text x="440" y="667" text-anchor="middle" font-size="10" fill="#555">CPU: 512 | Memory: 1024 MB | Network: awsvpc</text>
+  <text x="440" y="681" text-anchor="middle" font-size="10" fill="#555">MONGO_CONNECTION ← Secrets Manager | Deployment: CodeDeploy Blue/Green</text>
+  <text x="440" y="695" text-anchor="middle" font-size="10" fill="#555">Task Execution Role: task-execution-role | Task Role: task-role</text>
+  <text x="440" y="710" text-anchor="middle" font-size="10" fill="#555">CloudWatch Logs: ecs/wine-app-backend-log-group (7 days)</text>
+
+  <!-- DocumentDB -->
+  <rect x="830" y="590" width="280" height="150" rx="8" fill="#e8eaf6" stroke="#283593" stroke-width="1.5"/>
+  <text x="970" y="612" text-anchor="middle" font-size="11" font-weight="bold" fill="#283593">🗄️ Amazon DocumentDB</text>
+  <text x="970" y="628" text-anchor="middle" font-size="10" fill="#555">wine-app-mongodb-cluster</text>
+  <text x="970" y="643" text-anchor="middle" font-size="10" fill="#555">Engine: DocDB 5.0 (MongoDB compat)</text>
+  <text x="970" y="658" text-anchor="middle" font-size="10" fill="#555">Instance: db.t3.medium (×1)</text>
+  <text x="970" y="673" text-anchor="middle" font-size="10" fill="#555">Port: 27017 | TLS: disabled</text>
+  <text x="970" y="688" text-anchor="middle" font-size="10" fill="#555">Private subnet group</text>
+  <text x="970" y="703" text-anchor="middle" font-size="10" fill="#555">db-sg: from private-sg + bastion-sg</text>
+  <text x="970" y="718" text-anchor="middle" font-size="10" fill="#555">Backup: 5 days | 07:00–09:00 UTC</text>
+
+  <!-- ─── AWS Managed Services (below VPC) ─── -->
+  <rect x="50" y="910" width="1100" height="10" fill="none"/>
+
+  <!-- Secrets Manager (outside VPC, right) -->
+  <rect x="60" y="835" width="250" height="54" rx="8" fill="#fce4ec" stroke="#ad1457" stroke-width="1.5"/>
+  <text x="185" y="857" text-anchor="middle" font-size="12" font-weight="bold" fill="#ad1457">🔑 AWS Secrets Manager</text>
+  <text x="185" y="872" text-anchor="middle" font-size="10" fill="#ad1457">mongodb-password | mongodb-connection-string</text>
+  <text x="185" y="884" text-anchor="middle" font-size="10" fill="#ad1457">Random password (random_password)</text>
+
+  <!-- ECR -->
+  <rect x="340" y="835" width="220" height="54" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+  <text x="450" y="857" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e7d32">🐳 Amazon ECR</text>
+  <text x="450" y="872" text-anchor="middle" font-size="10" fill="#2e7d32">workshop-2/wineapp-backend</text>
+  <text x="450" y="884" text-anchor="middle" font-size="10" fill="#2e7d32">Docker image (tag from CodeBuild)</text>
+
+  <!-- CodeDeploy -->
+  <rect x="590" y="835" width="260" height="54" rx="8" fill="#fff3e0" stroke="#bf360c" stroke-width="1.5"/>
+  <text x="720" y="857" text-anchor="middle" font-size="12" font-weight="bold" fill="#bf360c">🚀 AWS CodeDeploy</text>
+  <text x="720" y="872" text-anchor="middle" font-size="10" fill="#bf360c">ecs-bluegreen-app | ECSAllAtOnce</text>
+  <text x="720" y="884" text-anchor="middle" font-size="10" fill="#bf360c">Auto-rollback on failure | 5 min drain</text>
+
+  <!-- IAM -->
+  <rect x="880" y="835" width="270" height="54" rx="8" fill="#f3e5f5" stroke="#4a148c" stroke-width="1.5"/>
+  <text x="1015" y="857" text-anchor="middle" font-size="12" font-weight="bold" fill="#4a148c">🛡️ IAM Roles</text>
+  <text x="1015" y="872" text-anchor="middle" font-size="10" fill="#4a148c">task-execution-role | task-role</text>
+  <text x="1015" y="884" text-anchor="middle" font-size="10" fill="#4a148c">codedeploy-service-role</text>
+
+  <!-- ─── Connection lines ─── -->
+
+  <!-- ALB → ECS Backend -->
+  <line x1="600" y1="499" x2="600" y2="618" stroke="#f57f17" stroke-width="1.5" marker-end="url(#arrow-orange)"/>
+
+  <!-- ECS → DocDB -->
+  <line x1="680" y1="665" x2="830" y2="665" stroke="#283593" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+  <text x="755" y="658" text-anchor="middle" font-size="9" fill="#283593">:27017</text>
+
+  <!-- ECS → Secrets Manager -->
+  <line x1="440" y1="728" x2="250" y2="840" stroke="#ad1457" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arrow-pink)"/>
+
+  <!-- ECS → ECR -->
+  <line x1="500" y1="728" x2="450" y2="835" stroke="#2e7d32" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arrow-green)"/>
+
+  <!-- ALB → CodeDeploy -->
+  <line x1="700" y1="499" x2="720" y2="835" stroke="#bf360c" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arrow-red)"/>
+
+  <!-- Bastion → DocDB -->
+  <line x1="970" y1="499" x2="970" y2="590" stroke="#4a148c" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+
+  <!-- NAT Gateway ↕ Private Subnet (outbound) -->
+  <line x1="190" y1="499" x2="190" y2="590" stroke="#006064" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+
+  <!-- ─── Arrow markers ─── -->
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#555"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#f57f17"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#283593"/>
+    </marker>
+    <marker id="arrow-pink" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#ad1457"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#2e7d32"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#bf360c"/>
+    </marker>
+  </defs>
+
+  <!-- Legend -->
+  <rect x="60" y="900" width="1080" height="40" rx="6" fill="#eceff1" stroke="#cfd8dc" stroke-width="1"/>
+  <text x="80" y="916" font-size="10" fill="#555">Legend:</text>
+  <line x1="130" y1="913" x2="165" y2="913" stroke="#555" stroke-width="1.5"/>
+  <text x="170" y="916" font-size="10" fill="#555">Traffic flow</text>
+  <line x1="240" y1="913" x2="275" y2="913" stroke="#555" stroke-width="1.2" stroke-dasharray="4,3"/>
+  <text x="280" y="916" font-size="10" fill="#555">Config/auth reference</text>
+  <rect x="415" y="906" width="12" height="12" fill="#e8f5e9" stroke="#1b5e20" stroke-width="1"/>
+  <text x="432" y="916" font-size="10" fill="#555">Networking/Storage</text>
+  <rect x="560" y="906" width="12" height="12" fill="#fff9c4" stroke="#f57f17" stroke-width="1"/>
+  <text x="577" y="916" font-size="10" fill="#555">Compute</text>
+  <rect x="645" y="906" width="12" height="12" fill="#e8eaf6" stroke="#283593" stroke-width="1"/>
+  <text x="662" y="916" font-size="10" fill="#555">Database</text>
+  <rect x="730" y="906" width="12" height="12" fill="#fce4ec" stroke="#ad1457" stroke-width="1"/>
+  <text x="747" y="916" font-size="10" fill="#555">Security/Secrets</text>
+  <rect x="845" y="906" width="12" height="12" fill="#e3f2fd" stroke="#1565c0" stroke-width="1"/>
+  <text x="862" y="916" font-size="10" fill="#555">Public Zone</text>
+  <rect x="935" y="906" width="12" height="12" fill="#fce4ec" stroke="#880e4f" stroke-width="1"/>
+  <text x="952" y="916" font-size="10" fill="#555">Private Zone</text>
+
+  <!-- CI/CD note -->
+  <text x="600" y="936" text-anchor="middle" font-size="10" fill="#888">CI/CD: AWS CodeBuild → ECR → GitOps Config Repo → CodeDeploy Blue/Green ECS deployment</text>
+</svg>
