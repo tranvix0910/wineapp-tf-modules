@@ -22,7 +22,7 @@
       "Action": [
         "secretsmanager:GetSecretValue"
       ],
-      "Resource": "arn:aws:secretsmanager:*:*:secret:wine-app-*"
+      "Resource": "arn:aws:secretsmanager:*:*:secret:wineapp-*"
     }
   ]
 }
