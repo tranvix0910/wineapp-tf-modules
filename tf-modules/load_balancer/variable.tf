@@ -29,6 +29,11 @@ variable "domain_name" {
   description = "The name of the domain"
 }
 
+variable "route53_zone_id" {
+  type        = string
+  description = "The ID of the hosted zone of the ALB"
+}
+
 # variable "project_alb_zone_id" {
 #   type        = string
 #   description = "The ID of the hosted zone of the ALB"

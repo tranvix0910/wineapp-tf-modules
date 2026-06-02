@@ -33,10 +33,11 @@ module "project_alb" {
   # Target Groups for Blue/Green
   target_groups = {
     backend_blue = {
-      name_prefix      = "blue-"
-      backend_protocol = "HTTP"
-      backend_port     = 4000
-      target_type      = "ip"
+      name_prefix       = "blue-"
+      backend_protocol  = "HTTP"
+      backend_port      = 4000
+      target_type       = "ip"
+      create_attachment = false
       health_check = {
         enabled             = true
         interval            = 30
@@ -49,10 +50,11 @@ module "project_alb" {
       }
     }
     backend_green = {
-      name_prefix      = "green-"
-      backend_protocol = "HTTP"
-      backend_port     = 4000
-      target_type      = "ip"
+      name_prefix       = "green-"
+      backend_protocol  = "HTTP"
+      backend_port      = 4000
+      target_type       = "ip"
+      create_attachment = false
       health_check = {
         enabled             = true
         interval            = 30
@@ -68,7 +70,7 @@ module "project_alb" {
 }
 
 resource "aws_route53_record" "project_domain_alias_record" {
-  zone_id = data.aws_route53_zone.public_zone.zone_id
+  zone_id = var.route53_zone_id
   name    = "${var.project_name}.${var.domain_name}"
   type    = "A"
 

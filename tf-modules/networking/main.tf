@@ -1,7 +1,7 @@
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
-  name = "${var.project_name}-${var.vpc_name}"
+  name = var.vpc_name
 
   cidr = var.vpc_cidr
 

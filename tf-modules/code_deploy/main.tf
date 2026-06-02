@@ -3,7 +3,7 @@ resource "aws_codedeploy_app" "ecs_bluegreen_app" {
   name             = "${var.project_name}-${var.codedeploy_app_name}"
 }
 
-# Deployment Group - Backend
+# Deployment Group - Backend ECS
 resource "aws_codedeploy_deployment_group" "ecs_bluegreen_deployment_group_backend" {
   app_name               = aws_codedeploy_app.ecs_bluegreen_app.name
   deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"
@@ -19,7 +19,6 @@ resource "aws_codedeploy_deployment_group" "ecs_bluegreen_deployment_group_backe
     deployment_ready_option {
       action_on_timeout = "CONTINUE_DEPLOYMENT"
     }
-
     terminate_blue_instances_on_deployment_success {
       action                           = "TERMINATE"
       termination_wait_time_in_minutes = 5
@@ -38,6 +37,7 @@ resource "aws_codedeploy_deployment_group" "ecs_bluegreen_deployment_group_backe
 
   load_balancer_info {
     target_group_pair_info {
+
       prod_traffic_route {
         listener_arns = [var.codedeploy_listener_arn]
       }
@@ -49,6 +49,7 @@ resource "aws_codedeploy_deployment_group" "ecs_bluegreen_deployment_group_backe
       target_group {
         name = var.codedeploy_backend_target_group_green_name
       }
+
     }
   }
 }

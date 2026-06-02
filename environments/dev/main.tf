@@ -1,128 +1,124 @@
-provider "aws" {
-  region = "ap-southeast-1"
-}
 
 module "aws_ecs_cluster" {
 
   source = "../../tf-modules/ecs_cluster"
 
   ecs_region       = "ap-southeast-1"
-  ecs_cluster_name = "wine-website-cluster"
-  ecs_subnet_ids   = module.aws_vpc.private_subnet_ids
+  project_name     = var.project_name
+  ecs_cluster_name = "${var.project_name}-ecs-cluster"
+
+  ecs_subnet_ids = module.aws_vpc.private_subnet_ids
   ecs_security_group_ids = [
     module.aws_security_group.private_sg_id
   ]
-
   ecs_task_execution_role_arn = module.aws_iam.task_execution_role_arn
   ecs_task_role_arn           = module.aws_iam.task_role_arn
 
-  # Frontend
-  frontend_log_group_name        = "ecs/wine-website-frontend-log-group"
-  frontend_container_name        = "wine-website-frontend"
-  frontend_ecr_image_url         = "022499043310.dkr.ecr.ap-southeast-1.amazonaws.com/workshop-2/wineapp-frontend:v1.0.0"
-  alb_dns_backend                = module.aws_load_balance.alb_dns_backend
-  frontend_target_group_blue_arn = module.aws_load_balance.frontend_target_group_blue_arn
-
   # Backend
-  backend_log_group_name               = "ecs/wine-website-backend-log-group"
-  backend_container_name               = "wine-website-backend"
-  backend_ecr_image_url                = "022499043310.dkr.ecr.ap-southeast-1.amazonaws.com/workshop-2/wineapp-backend:v1.0.0"
-  mongodb_connection_string_secret_arn = module.database.mongodb_connection_string_arn
+  backend_log_group_name               = "ecs/${var.project_name}-backend-log-group"
+  backend_container_name               = "${var.project_name}-backend"
+  backend_ecr_image_url                = var.backend_ecr_image_url
+  mongodb_connection_string_secret_arn = var.mongodb_connection_string_secret_arn
   backend_target_group_blue_arn        = module.aws_load_balance.backend_target_group_blue_arn
 }
 
 module "aws_vpc" {
   source = "../../tf-modules/networking"
 
-  vpc_name = "wine-website-vpc"
+  vpc_name = "${var.project_name}-vpc"
 
-  vpc_cidr = "10.0.0.0/16"
-  vpc_azs  = ["ap-southeast-1a", "ap-southeast-1b"]
+  vpc_cidr = var.vpc_cidr
+  vpc_azs  = var.vpc_azs
 
-  vpc_public_subnets      = ["10.0.1.0/24", "10.0.2.0/24"]
-  vpc_public_subnet_names = ["public-subnet-1-student-management", "public-subnet-2-student-management"]
+  vpc_public_subnets      = var.vpc_public_subnets
+  vpc_public_subnet_names = var.vpc_public_subnet_names
 
-  vpc_private_subnets      = ["10.0.101.0/24", "10.0.102.0/24"]
-  vpc_private_subnet_names = ["private-subnet-1-student-management", "private-subnet-2-student-management"]
+  vpc_private_subnets      = var.vpc_private_subnets
+  vpc_private_subnet_names = var.vpc_private_subnet_names
 }
 
 module "aws_security_group" {
   source = "../../tf-modules/security"
 
-  vpc_id = module.aws_vpc.vpc_id
+  project_name          = var.project_name
+  project_vpc_id        = module.aws_vpc.vpc_id
+  bastion_instance_name = "${var.project_name}-bastion"
 }
 
-module "aws_load_balance" {
-  source = "../../tf-modules/load_balancer"
+module "aws_bastion_instance" {
+  source = "../../tf-modules/bastion"
 
-  load_balancer_name = "wine-website-load-balancer"
+  bastion_instance_name = "${var.project_name}-bastion"
+  instance_type         = var.instance_type
+  ami_id                = var.ami_id
 
-  vpc_id = module.aws_vpc.vpc_id
-
-  load_balancer_security_group_ids = [
-    module.aws_security_group.public_sg_id
-  ]
-
-  load_balancer_subnets_ids = module.aws_vpc.public_subnet_ids
+  vpc_security_group_ids = [module.aws_security_group.bastion_sg_id]
+  public_subnet_id       = module.aws_vpc.public_subnet_ids[0]
 }
 
 module "aws_iam" {
   source = "../../tf-modules/iam"
 
-  task_execution_role_name   = "wine-website-task-execution-role"
-  task_execution_policy_name = "wine-website-task-execution-policy"
-
-  task_role_name        = "wine-website-task-role"
-  task_role_policy_name = "wine-website-task-policy"
-
-  codedeploy_service_role_name   = "wine-website-codedeploy-service-role"
-  codedeploy_service_policy_name = "wine-website-codedeploy-service-policy"
+  task_execution_role_name       = "${var.project_name}-task-execution-role"
+  task_execution_policy_name     = "${var.project_name}-task-execution-policy"
+  task_role_name                 = "${var.project_name}-task-role"
+  task_role_policy_name          = "${var.project_name}-task-role-policy"
+  codedeploy_service_role_name   = "${var.project_name}-codedeploy-service-role"
+  codedeploy_service_policy_name = "${var.project_name}-codedeploy-service-policy"
 }
 
-module "aws_bastion" {
-  source = "../../tf-modules/bastion"
+module "aws_route53" {
+  source = "../../tf-modules/route53"
 
-  instance_type   = "t2.micro"
-  ami_id          = "ami-01938df366ac2d954"
-  public_key_path = "../../Key/terraform.pub"
+  project_name = var.project_name
+  domain_name  = var.domain_name
+}
 
-  vpc_security_group_ids = [
-    module.aws_security_group.bastion_sg_id
+module "aws_load_balance" {
+  source = "../../tf-modules/load_balancer"
+
+  project_name = var.project_name
+  domain_name  = var.domain_name
+
+  route53_zone_id = module.aws_route53.route53_zone_id
+  vpc_id          = module.aws_vpc.vpc_id
+
+  load_balancer_security_group_ids = [
+    module.aws_security_group.public_sg_id
   ]
+  load_balancer_subnets_ids = module.aws_vpc.public_subnet_ids
 
-  subnet_id = module.aws_vpc.public_subnet_ids[0]
+  acm_certificate_arn = module.aws_route53.acm_certificate_arn
 }
 
-module "database" {
-  source          = "../../tf-modules/database"
-  db_username     = "rootuser"
-  db_subnet_group = module.aws_vpc.private_subnet_ids
-  db_security_group_ids = [
-    module.aws_security_group.database_sg_id
-  ]
+module "aws_s3_frontend" {
+  source = "../../tf-modules/s3_frontend"
+
+  project_name   = var.project_name
+  environment    = var.environment
+  cloudfront_arn = module.aws_cloudfront.cloudfront_arn
 }
 
-# module "aws_code_deploy" {
-#   source = "../../tf-modules/code_deploy"
+module "aws_cloudfront" {
+  source = "../../tf-modules/cloudfront"
 
-#   codedeploy_app_name = "ecs-bluegreen-app"
+  project_name                   = var.project_name
+  environment                    = var.environment
+  s3_bucket_regional_domain_name = module.aws_s3_frontend.bucket_regional_domain_name
+}
 
-#   codedeploy_deployment_group_name_frontend = "ecs-bluegreen-deployment-group-frontend"
-#   codedeploy_deployment_group_name_backend = "ecs-bluegreen-deployment-group-backend"
+module "aws_code_deploy" {
+  source = "../../tf-modules/code_deploy"
 
-#   codedeploy_ecs_task_role_arn = module.aws_iam.codedeploy_service_role_arn
+  project_name                             = var.project_name
+  codedeploy_app_name                      = "ecs-bluegreen-app"
+  codedeploy_deployment_group_name_backend = "ecs-bluegreen-deployment-group-backend"
 
-#   codedeploy_ecs_cluster_name = module.aws_ecs_cluster.ecs_cluster_name
+  codedeploy_ecs_task_role_arn        = module.aws_iam.codedeploy_service_role_arn
+  codedeploy_ecs_cluster_name         = module.aws_ecs_cluster.ecs_cluster_name
+  codedeploy_ecs_service_backend_name = module.aws_ecs_cluster.backend_service_name
 
-#   codedeploy_ecs_service_frontend_name = module.aws_ecs_cluster.frontend_service_name
-#   codedeploy_ecs_service_backend_name = module.aws_ecs_cluster.backend_service_name
-
-#   codedeploy_frontend_listener_arn = module.aws_load_balance.frontend_listener_arn
-
-#   codedeploy_frontend_target_group_blue_name = module.aws_load_balance.frontend_target_group_blue_name
-#   codedeploy_frontend_target_group_green_name = module.aws_load_balance.frontend_target_group_green_name
-
-#   codedeploy_backend_target_group_blue_name = module.aws_load_balance.backend_target_group_blue_name
-#   codedeploy_backend_target_group_green_name = module.aws_load_balance.backend_target_group_green_name
-# }
-
+  codedeploy_listener_arn                    = module.aws_load_balance.listener_arn
+  codedeploy_backend_target_group_blue_name  = module.aws_load_balance.backend_target_group_blue_name
+  codedeploy_backend_target_group_green_name = module.aws_load_balance.backend_target_group_green_name
+}

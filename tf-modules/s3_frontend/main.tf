@@ -1,6 +1,5 @@
 resource "aws_s3_bucket" "frontend_bucket" {
   bucket = "${var.project_name}-frontend-${var.environment}"
-  
   force_destroy = true
 }
 
@@ -26,7 +25,6 @@ resource "aws_s3_bucket_public_access_block" "frontend_public_access_block" {
 }
 
 resource "aws_s3_bucket_policy" "frontend_bucket_policy" {
-  count  = var.cloudfront_arn != "" ? 1 : 0
   bucket = aws_s3_bucket.frontend_bucket.id
 
   policy = jsonencode({

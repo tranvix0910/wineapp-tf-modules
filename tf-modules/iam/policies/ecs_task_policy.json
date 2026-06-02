@@ -13,10 +13,16 @@
         "ecr:DescribeImages",
         "ecr:BatchGetImage",
         "logs:CreateLogStream",
-        "logs:PutLogEvents",
-        "secretsmanager:GetSecretValue"
+        "logs:PutLogEvents"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": "arn:aws:secretsmanager:*:*:secret:wine-app-*"
     }
   ]
 }
