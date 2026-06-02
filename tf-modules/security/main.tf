@@ -30,7 +30,7 @@ module "bastion_sg" {
   vpc_id      = var.project_vpc_id
 
   ingress_with_cidr_blocks = []
-  egress_rules = ["all-all"]
+  egress_rules             = ["all-all"]
 }
 
 module "private_sg" {
@@ -42,21 +42,21 @@ module "private_sg" {
 
   ingress_with_source_security_group_id = [
     {
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
+      from_port                = 80
+      to_port                  = 80
+      protocol                 = "tcp"
       source_security_group_id = module.public_sg.security_group_id
     },
     {
-      from_port   = 8080
-      to_port     = 8080
-      protocol    = "tcp"
+      from_port                = 8080
+      to_port                  = 8080
+      protocol                 = "tcp"
       source_security_group_id = module.public_sg.security_group_id
     },
     {
-      from_port   = 4000
-      to_port     = 4000
-      protocol    = "tcp"
+      from_port                = 4000
+      to_port                  = 4000
+      protocol                 = "tcp"
       source_security_group_id = module.public_sg.security_group_id
     }
   ]
@@ -72,15 +72,15 @@ module "database_sg" {
 
   ingress_with_source_security_group_id = [
     {
-      from_port   = 27017
-      to_port     = 27017
-      protocol    = "tcp"
+      from_port                = 27017
+      to_port                  = 27017
+      protocol                 = "tcp"
       source_security_group_id = module.bastion_sg.security_group_id
     },
     {
-      from_port   = 27017
-      to_port     = 27017
-      protocol    = "tcp"
+      from_port                = 27017
+      to_port                  = 27017
+      protocol                 = "tcp"
       source_security_group_id = module.private_sg.security_group_id
     }
   ]

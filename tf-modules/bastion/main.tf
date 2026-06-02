@@ -14,7 +14,7 @@ resource "aws_iam_instance_profile" "ssm_profile" {
 }
 
 module "ec2_instance" {
-  source  = "terraform-aws-modules/ec2-instance/aws"
+  source = "terraform-aws-modules/ec2-instance/aws"
 
   name = var.bastion_instance_name
 
@@ -23,7 +23,7 @@ module "ec2_instance" {
   vpc_security_group_ids = var.vpc_security_group_ids
 
   // Auto detect VPC
-  subnet_id              = var.public_subnet_id
+  subnet_id = var.public_subnet_id
 
   associate_public_ip_address = true
 

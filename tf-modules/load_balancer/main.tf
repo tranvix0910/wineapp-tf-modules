@@ -1,31 +1,22 @@
 module "project_alb" {
-  source  = "terraform-aws-modules/alb/aws"
+  source = "terraform-aws-modules/alb/aws"
 
-  name               = "${var.project_name}-alb"
+  name = "${var.project_name}-alb"
 
-  vpc_id             = var.vpc_id
-  subnets            = var.load_balancer_subnets_ids
-  security_groups    = var.load_balancer_security_group_ids
+  vpc_id          = var.vpc_id
+  subnets         = var.load_balancer_subnets_ids
+  security_groups = var.load_balancer_security_group_ids
 
   enable_deletion_protection = false
 
   # Listeners
   listeners = {
-    https-443 = {
-      port     = 443
-      protocol = "HTTPS"
-      certificate_arn = var.acm_certificate_arn
-      forward = {
-        target_group_key = "backend_blue"
-      }
-    }
+
     http-80 = {
       port     = 80
       protocol = "HTTP"
-      redirect = {
-        port        = "443"
-        protocol    = "HTTPS"
-        status_code = "HTTP_301"
+      forward = {
+        target_group_key = "backend_blue"
       }
     }
   }
@@ -66,17 +57,5 @@ module "project_alb" {
         protocol            = "HTTP"
       }
     }
-  }
-}
-
-resource "aws_route53_record" "project_domain_alias_record" {
-  zone_id = var.route53_zone_id
-  name    = "${var.project_name}.${var.domain_name}"
-  type    = "A"
-
-  alias {
-    name                   = module.project_alb.dns_name
-    zone_id                = module.project_alb.zone_id
-    evaluate_target_health = true
   }
 }

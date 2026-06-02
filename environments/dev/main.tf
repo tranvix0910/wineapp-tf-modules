@@ -70,6 +70,10 @@ module "aws_iam" {
 module "aws_route53" {
   source = "../../tf-modules/route53"
 
+  providers = {
+    aws.us_east_1 = aws.us_east_1
+  }
+
   project_name = var.project_name
   domain_name  = var.domain_name
 }
@@ -78,17 +82,12 @@ module "aws_load_balance" {
   source = "../../tf-modules/load_balancer"
 
   project_name = var.project_name
-  domain_name  = var.domain_name
-
-  route53_zone_id = module.aws_route53.route53_zone_id
-  vpc_id          = module.aws_vpc.vpc_id
+  vpc_id       = module.aws_vpc.vpc_id
 
   load_balancer_security_group_ids = [
     module.aws_security_group.public_sg_id
   ]
   load_balancer_subnets_ids = module.aws_vpc.public_subnet_ids
-
-  acm_certificate_arn = module.aws_route53.acm_certificate_arn
 }
 
 module "aws_s3_frontend" {
@@ -104,7 +103,11 @@ module "aws_cloudfront" {
 
   project_name                   = var.project_name
   environment                    = var.environment
+  domain_name                    = var.domain_name
   s3_bucket_regional_domain_name = module.aws_s3_frontend.bucket_regional_domain_name
+  alb_dns_name                   = module.aws_load_balance.alb_dns_name
+  acm_certificate_arn            = module.aws_route53.acm_certificate_arn
+  route53_zone_id                = module.aws_route53.route53_zone_id
 }
 
 module "aws_code_deploy" {

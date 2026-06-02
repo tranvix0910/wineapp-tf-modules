@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "frontend_bucket" {
-  bucket = "${var.project_name}-frontend-${var.environment}"
+  bucket        = "${var.project_name}-frontend-${var.environment}"
   force_destroy = true
 }
 
@@ -31,13 +31,13 @@ resource "aws_s3_bucket_policy" "frontend_bucket_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "AllowCloudFrontServicePrincipalReadOnly"
-        Effect    = "Allow"
+        Sid    = "AllowCloudFrontServicePrincipalReadOnly"
+        Effect = "Allow"
         Principal = {
           Service = "cloudfront.amazonaws.com"
         }
-        Action    = "s3:GetObject"
-        Resource  = "${aws_s3_bucket.frontend_bucket.arn}/*"
+        Action   = "s3:GetObject"
+        Resource = "${aws_s3_bucket.frontend_bucket.arn}/*"
         Condition = {
           StringEquals = {
             "AWS:SourceArn" = var.cloudfront_arn

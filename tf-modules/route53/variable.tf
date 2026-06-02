@@ -1,11 +1,12 @@
-variable "domain_name" {
-  description = "The root domain name (e.g., tranvix.click)"
-  type        = string
-}
-
 variable "project_name" {
-  description = "The name of the project"
   type        = string
+  description = "The name of the project"
   default     = "wine-app"
 }
+
+variable "domain_name" {
+  type        = string
+  description = "The name of the domain"
+}
+
 
