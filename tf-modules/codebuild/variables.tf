@@ -37,3 +37,14 @@ variable "artifacts_bucket_id" {
   description = "Name of the S3 Bucket used for storing Pipeline artifacts"
   type        = string
 }
+
+variable "backend_build_role_arn" {
+  description = "ARN of the IAM Role for Backend CodeBuild"
+  type        = string
+}
+
+variable "frontend_build_role_arn" {
+  description = "ARN of the IAM Role for Frontend CodeBuild"
+  type        = string
+}
+

@@ -63,7 +63,8 @@ resource "aws_iam_role_policy" "pipeline_policy" {
           "codecommit:UploadArchive"
         ]
         Resource = [
-          var.codecommit_repo_arn
+          var.backend_codecommit_repo_arn,
+          var.frontend_codecommit_repo_arn
         ]
       },
       {
@@ -127,7 +128,7 @@ resource "aws_codepipeline" "backend_pipeline" {
       output_artifacts = ["SourceArtifact"]
 
       configuration = {
-        RepositoryName = var.codecommit_repo_name
+        RepositoryName = var.backend_codecommit_repo_name
         BranchName     = "main"
       }
     }
@@ -198,7 +199,7 @@ resource "aws_codepipeline" "frontend_pipeline" {
       output_artifacts = ["SourceArtifact"]
 
       configuration = {
-        RepositoryName = var.codecommit_repo_name
+        RepositoryName = var.frontend_codecommit_repo_name
         BranchName     = "main"
       }
     }

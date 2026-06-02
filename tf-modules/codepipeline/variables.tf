@@ -8,13 +8,23 @@ variable "environment" {
   type        = string
 }
 
-variable "codecommit_repo_name" {
-  description = "The name of the CodeCommit repository"
+variable "backend_codecommit_repo_name" {
+  description = "The name of the Backend CodeCommit repository"
   type        = string
 }
 
-variable "codecommit_repo_arn" {
-  description = "The ARN of the CodeCommit repository"
+variable "backend_codecommit_repo_arn" {
+  description = "The ARN of the Backend CodeCommit repository"
+  type        = string
+}
+
+variable "frontend_codecommit_repo_name" {
+  description = "The name of the Frontend CodeCommit repository"
+  type        = string
+}
+
+variable "frontend_codecommit_repo_arn" {
+  description = "The ARN of the Frontend CodeCommit repository"
   type        = string
 }
 

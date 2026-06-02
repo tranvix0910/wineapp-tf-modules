@@ -28,6 +28,37 @@ variable "codedeploy_service_policy_name" {
   type        = string
 }
 
+variable "project_name" {
+  description = "The project name"
+  type        = string
+}
+
+variable "environment" {
+  description = "The environment (e.g. dev, prod)"
+  type        = string
+}
+
+variable "backend_build_role_name" {
+  description = "The name of the backend CodeBuild role"
+  type        = string
+}
+
+variable "backend_build_policy_name" {
+  description = "The name of the backend CodeBuild policy"
+  type        = string
+}
+
+variable "frontend_build_role_name" {
+  description = "The name of the frontend CodeBuild role"
+  type        = string
+}
+
+variable "frontend_build_policy_name" {
+  description = "The name of the frontend CodeBuild policy"
+  type        = string
+}
+
+
 
 
 

@@ -59,12 +59,18 @@ module "aws_bastion_instance" {
 module "aws_iam" {
   source = "../../tf-modules/iam"
 
+  project_name                   = var.project_name
+  environment                    = var.environment
   task_execution_role_name       = "${var.project_name}-task-execution-role"
   task_execution_policy_name     = "${var.project_name}-task-execution-policy"
   task_role_name                 = "${var.project_name}-task-role"
   task_role_policy_name          = "${var.project_name}-task-role-policy"
   codedeploy_service_role_name   = "${var.project_name}-codedeploy-service-role"
   codedeploy_service_policy_name = "${var.project_name}-codedeploy-service-policy"
+  backend_build_role_name        = "${var.project_name}-backend-codebuild-role"
+  backend_build_policy_name      = "${var.project_name}-backend-codebuild-policy"
+  frontend_build_role_name       = "${var.project_name}-frontend-codebuild-role"
+  frontend_build_policy_name      = "${var.project_name}-frontend-codebuild-policy"
 }
 
 module "aws_route53" {
@@ -153,6 +159,8 @@ module "aws_codebuild" {
   cloudfront_distribution_id  = module.aws_cloudfront.cloudfront_distribution_id
   artifacts_bucket_arn        = module.aws_codepipeline.artifacts_bucket_arn
   artifacts_bucket_id         = module.aws_codepipeline.artifacts_bucket_id
+  backend_build_role_arn      = module.aws_iam.backend_build_role_arn
+  frontend_build_role_arn     = module.aws_iam.frontend_build_role_arn
 }
 
 module "aws_codepipeline" {
@@ -160,8 +168,10 @@ module "aws_codepipeline" {
 
   project_name                     = var.project_name
   environment                      = var.environment
-  codecommit_repo_name             = module.aws_codecommit.repository_name
-  codecommit_repo_arn              = module.aws_codecommit.repository_arn
+  backend_codecommit_repo_name     = module.aws_codecommit.backend_repository_name
+  backend_codecommit_repo_arn      = module.aws_codecommit.backend_repository_arn
+  frontend_codecommit_repo_name    = module.aws_codecommit.frontend_repository_name
+  frontend_codecommit_repo_arn     = module.aws_codecommit.frontend_repository_arn
   backend_codebuild_project_name   = module.aws_codebuild.backend_project_name
   frontend_codebuild_project_name  = module.aws_codebuild.frontend_project_name
   codedeploy_app_name              = "${var.project_name}-ecs-bluegreen-app"
