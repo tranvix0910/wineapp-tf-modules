@@ -18,7 +18,7 @@ module "aws_ecs_cluster" {
   backend_log_group_name               = "ecs/${var.project_name}-backend-log-group"
   backend_container_name               = "${var.project_name}-backend"
   backend_ecr_image_url                = var.backend_ecr_image_url
-  mongodb_connection_string_secret_arn = var.mongodb_connection_string_secret_arn
+  mongodb_connection_string_secret_arn = module.aws_database.mongodb_connection_string_arn
   backend_target_group_blue_arn        = module.aws_load_balance.backend_target_group_blue_arn
 }
 
@@ -124,4 +124,13 @@ module "aws_code_deploy" {
   codedeploy_listener_arn                    = module.aws_load_balance.listener_arn
   codedeploy_backend_target_group_blue_name  = module.aws_load_balance.backend_target_group_blue_name
   codedeploy_backend_target_group_green_name = module.aws_load_balance.backend_target_group_green_name
+}
+
+module "aws_database" {
+  source = "../../tf-modules/database"
+
+  project_name          = var.project_name
+  db_username           = var.db_username
+  db_subnet_group       = module.aws_vpc.private_subnet_ids
+  db_security_group_ids = [module.aws_security_group.database_sg_id]
 }

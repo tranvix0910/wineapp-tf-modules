@@ -62,7 +62,7 @@ variable "ami_id" {
   default = "ami-01938df366ac2d954"
 }
 
-variable "mongodb_connection_string_secret_arn" {
+variable "db_username" {
   type    = string
-  default = "arn:aws:secretsmanager:ap-southeast-1:123456789012:secret:dummy"
+  default = "dbadmin"
 }
