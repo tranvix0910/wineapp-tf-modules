@@ -7,10 +7,23 @@ terraform {
   }
 }
 
+
+
 data "aws_route53_zone" "public_zone" {
   name         = var.domain_name
   private_zone = false // Public Hosted Zone
 }
+
+# resource "aws_route53_zone" "public_zone" {
+#   name = var.domain_name
+# }
+
+# [ADDRESS]: module.aws_route53.aws_route53_zone.public_zone
+# [ID]: Z09311402V4H604GA61A7
+
+# terraform import \
+# module.aws_route53.aws_route53_zone.public_zone \
+# Z09311402V4H604GA61A7
 
 # Certificate for CloudFront (Must be in us-east-1)
 resource "aws_acm_certificate" "project_cert" {
@@ -36,9 +49,10 @@ resource "aws_route53_record" "project_cert_validation_record" {
   allow_overwrite = true
   name            = each.value.name
   records         = [each.value.record]
-  ttl             = 60
+  ttl             = 60  
   type            = each.value.type
   zone_id         = data.aws_route53_zone.public_zone.zone_id
+  # zone_id         = aws_route53_zone.public_zone.zone_id
 }
 
 resource "aws_acm_certificate_validation" "project_cert_validation" {

@@ -5,5 +5,6 @@ output "acm_certificate_arn" {
 
 output "route53_zone_id" {
   description = "The ID of the hosted zone of the ALB"
+  # value = aws_route53_zone.public_zone.zone_id
   value       = data.aws_route53_zone.public_zone.zone_id
 }
