@@ -3,11 +3,6 @@ variable "bucket_name" {
   description = "Name of the S3 bucket to store Terraform state"
 }
 
-variable "dynamodb_table_name" {
-  type        = string
-  default     = "terraform-state-lock"
-  description = "Name of the DynamoDB table used for state locking"
-}
 
 variable "enable_versioning" {
   type        = bool
