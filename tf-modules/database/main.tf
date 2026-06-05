@@ -5,7 +5,7 @@ resource "random_password" "mongodb_password" {
 }
 
 resource "aws_secretsmanager_secret" "mongodb_secret" {
-  name = "${var.project_name}-mongodb-password"
+  name                    = "${var.project_name}-mongodb-password"
   recovery_window_in_days = 0
 }
 
@@ -16,7 +16,7 @@ resource "aws_secretsmanager_secret_version" "mongodb_secret_version" {
 
 # Database Credentials Secret
 resource "aws_secretsmanager_secret" "mongodb_connection_string" {
-  name = "${var.project_name}-mongodb-connection-string"
+  name                    = "${var.project_name}-mongodb-connection-string"
   recovery_window_in_days = 0
 }
 

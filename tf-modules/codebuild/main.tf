@@ -36,8 +36,8 @@ resource "aws_codebuild_project" "backend_build" {
 
   logs_config {
     cloudwatch_logs {
-      group_name  = "/aws/codebuild/${var.project_name}-backend-build"
-      status      = "ENABLED"
+      group_name = "/aws/codebuild/${var.project_name}-backend-build"
+      status     = "ENABLED"
     }
   }
 }
@@ -77,8 +77,8 @@ resource "aws_codebuild_project" "frontend_build" {
 
   logs_config {
     cloudwatch_logs {
-      group_name  = "/aws/codebuild/${var.project_name}-frontend-build"
-      status      = "ENABLED"
+      group_name = "/aws/codebuild/${var.project_name}-frontend-build"
+      status     = "ENABLED"
     }
   }
 }

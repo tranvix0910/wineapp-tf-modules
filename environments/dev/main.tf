@@ -183,3 +183,13 @@ module "aws_code_deploy" {
 # 
 #   bucket_name = "${var.project_name}-${var.environment}-tf-state"
 # }
+
+# resource "aws_s3_bucket" "test_import_bucket" {
+#   bucket        = "workshop-2-codebuild-artifacts"
+# }
+
+# import {
+#   to = aws_s3_bucket.test_import_bucket
+#   id = "workshop-2-codebuild-artifacts"
+# }
+

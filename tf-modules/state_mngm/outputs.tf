@@ -10,7 +10,7 @@ output "backend_config" {
 
 output "backend_config_snippet" {
   description = "Backend configuration snippet for other environments"
-  value = <<-EOT
+  value       = <<-EOT
     terraform {
       backend "s3" {
         bucket       = "${aws_s3_bucket.terraform_state.id}"
